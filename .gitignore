@@ -1,0 +1,44 @@
+# Node.js (for backend)
+node_modules/
+.env
+.env.local
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# React (for frontend)
+client/node_modules/
+client/build/
+client/.env
+client/.env.local
+client/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+
+# Logs
+logs
+*.log
+*.log.*
+
+# OS/Editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Optional: Ignore test coverage
+coverage/
+client/coverage/
+
+# Optional: Ignore database files if any
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# Optional: Ignore uploads or tmp folders
+uploads/
+tmp/
