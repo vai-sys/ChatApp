@@ -2,6 +2,7 @@ import User from "../models/User.js"
 import bcrypt from "bcryptjs"
 import { generateToken } from "../config/utils.js";
 import jwt from "jsonwebtoken"
+import cloudinary from "../config/cloudinary.js"
 
 export const signup=async(req,res)=>{
     const {fullName ,email,password}=req.body;
@@ -43,32 +44,37 @@ export const signup=async(req,res)=>{
 
 }
 
-export const login=async (req,res)=>{
-const{email,password}=req.body;
-try{
-    const user=await User.findOne({email});
-    if(!user){
-        return res.status(400).json({message:"Invalid credentials"});
-    }
-    const isPasswordCorerct=await bcrypt.compare(password,user.password);
-    if(!isPasswordCorerct){
-        return res.status(400).json({message:"Invalid credentials"});
-    }
-    generateToken(user._id,res);
-    res.status(200).json({
-        _id:user._id,
-        fullName:user.fullName,
-        email:user.email,
-        profilePic:user.profilePic,
+export const login = async (req, res) => {
+    const { email, password } = req.body;
 
+    try {
+        const user = await User.findOne({ email });
 
-    })
-}
-catch(err){
-console.log("Error in login controller",err.message);
-res.status(500).json({message:"Internal Server Error"});
-}
-}
+        if (!user) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordCorrect) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        const token=generateToken(user._id, res);
+
+        res.status(200).json({
+            _id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            profilePic: user.profilePic,
+            token
+        });
+
+    } catch (err) {
+        console.error("Error in login controller", err.message);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
 
 export const logout=(req,res)=>{
 try{
@@ -81,8 +87,37 @@ catch(err){
 }
 }
 
-export const UpdateProfile=()=>{
-    
+export const UpdateProfile=async(req,res)=>{
+   try{
+    const {profilePic} =req.body;
+    const userId=req.user._id;
+    console.log("UserId :" ,userId)
+    if(!profilePic){
+        return res.status(400).json({message:"profile pic is required!"});
+    }
+
+    const uploadRes=await cloudinary.uploader.upload(profilePic);
+    console.log(" cloudinary image : " ,uploadRes);
+    const updatedUser=await User.findByIdAndUpdate(userId ,{profile:uploadResponse.secure_url},{new:true});
+    res.status(200).json(updatedUser); 
+
+
+   }
+   catch(err){
+    console.log(err);
+    res.status(500).json("Internal Server error!!")
+
+   } 
+}
+
+export const checkAuth=async(req,res)=>{
+try{
+    res.status(200).json(req.user);
+
+}catch(err){
+    console.log(err);
+    res.status(500).json({message : "Internal Server Error"});
+}
 }
 
 
