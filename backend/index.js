@@ -8,13 +8,14 @@ dotenv.config();
 import cors from "cors"
 
 const app=express();
+
+app.use(cookieParser());
+const port=3000;
+app.use(express.json());
 app.use(cors({
     origin: "http://localhost:5173",
     credentials: true
 }));
-app.use(cookieParser());
-const port=3000;
-app.use(express.json());
 
 app.use("/api/auth",authRoutes);
 app.use("/api/message",messageRoutes);
