@@ -10,7 +10,7 @@ import cors from "cors"
 const app=express();
 
 app.use(cookieParser());
-const port=3000;
+const port=5000;
 app.use(express.json());
 app.use(cors({
     origin: "http://localhost:5173",

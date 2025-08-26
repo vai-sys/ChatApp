@@ -6,11 +6,12 @@ import User from "../models/User.js";
 
 export const protectedRoute = async (req, res, next) => {
     try {
-        const token = req.cookies.jwt;
+        // const token = req.cookies.jwt;
       
 
+const token = req.cookies.jwt;
 
-        
+
         console.log("Cookies received:", req.cookies); 
         console.log("JWT token:", token); 
         
